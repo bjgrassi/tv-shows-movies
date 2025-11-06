@@ -8,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 var builderConfig = builder.Configuration;
 
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 builder.Services.AddAutoMapper(assembly);
@@ -20,6 +23,9 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 app.MapControllers();

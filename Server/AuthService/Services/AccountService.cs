@@ -17,11 +17,11 @@ public class AccountService : IAccountService
     }
     public async Task Create(AccountDto AccountDto)
     {
-        if (AccountDto.Email != null)
-            throw new ArgumentException("User already has account.");
+        // if (AccountDto.Email != null)
+        //     throw new ArgumentException("User already has account.");
 
-        if (AccountDto.RoleID == null)
-            AccountDto.RoleID = 3; // Default role is 'Regular'
+        // if (AccountDto.RoleID == null)
+        //     AccountDto.RoleID = 3; // Default role is 'Regular'
             
         var account = _mapper.Map<Account>(AccountDto);
         await _accountRepository.Create(account);

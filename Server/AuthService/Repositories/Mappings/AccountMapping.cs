@@ -13,5 +13,9 @@ public class AccountMapping : IEntityTypeConfiguration<Account>
         builder.Property(x => x.Email).IsRequired().HasColumnName("Email");
         builder.Property(x => x.FullName).IsRequired().HasColumnName("FullName");
         builder.Property(x => x.Password).IsRequired().HasColumnName("Password");
+        builder.Property(x => x.RoleID).IsRequired().HasColumnName("RoleID");
+        builder.HasOne(x => x.Role)
+            .WithMany()
+            .HasForeignKey(x => x.RoleID);
     }
 }

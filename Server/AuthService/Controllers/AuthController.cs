@@ -7,7 +7,7 @@ using AuthService.Services.Dto;
 namespace AuthService.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]")] // Auth/...
 public class AuthController : ControllerBase
 {
     private readonly ILogger<AuthController> _logger;
@@ -22,22 +22,39 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("CreateAccount")]
-    public async Task<IActionResult> Create([FromBody] AccountDto user)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create([FromBody] AccountDto account)
     {
-        _logger.LogInformation($"Saving new user with DTO: {user.ToString()}.");
-        await _accountService.Create(user);
-        return Ok();
+        _logger.LogInformation($"Saving new account with DTO: {account.ToString()}.");
+        await _accountService.Create(account);
+        return CreatedAtAction(nameof(GetById), new { email = account.Email }, account);
     }
 
-    [HttpPost("UpdateAccount")]
-    public async Task<IActionResult> Update([FromBody] AccountDto user)
+    [HttpPut("UpdateAccount")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update([FromBody] AccountDto account)
     {
-        _logger.LogInformation($"Updating user with DTO: {user.ToString()}.");
-        await _accountService.Update(user);
-        return Ok();
+        _logger.LogInformation($"Updating user with DTO: {account.ToString()}.");
+        if (account.Email == null)
+        {
+            return NotFound();
+        }
+
+        var accountItem = await _accountService.Get(account.Email);
+
+        if (accountItem.Email != account.Email)
+        {
+            return BadRequest();
+        }
+
+        await _accountService.Update(account);
+        return NoContent();
     }
 
-    [HttpPost("DeleteAccount")]
+    [HttpDelete("DeleteAccount")]
     public async Task<IActionResult> Delete([FromBody] AccountDto user)
     {
         _logger.LogInformation($"Deleting user with DTO: {user.ToString()}.");
