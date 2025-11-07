@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Shared.Repository;
 
@@ -41,5 +40,10 @@ public class UnitOfWork<T> : IRepository<T> where T : class
     public async Task<T> GetOneByCriteria(Expression<Func<T, bool>> expression)
     {
         return await this.Query.Where(expression).FirstOrDefaultAsync();
+    }
+
+    public IQueryable<T> GetQueryable()
+    {
+        return this.Query;
     }
 }

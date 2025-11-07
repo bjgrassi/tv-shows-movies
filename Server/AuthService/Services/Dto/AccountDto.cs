@@ -6,4 +6,6 @@ public class AccountDto
     public string? FullName { get; set; }
     public string? Password { get; set; }
     public int? RoleID { get; set; }
+
+    public RoleDto? Role { get; set; }
 }

@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 using AuthService.Domain;
 using AuthService.Repositories;
 using AuthService.Services.Dto;
@@ -43,8 +45,12 @@ public class AccountService : IAccountService
     }
     public async Task<List<AccountDto>> GetAll()
     {
-        var result = await _accountRepository.GetAll();
-        return _mapper.Map<List<AccountDto>>(result);
+        var query = _accountRepository.GetQueryable();
+        query = query.Include(account => account.Role);
+        var result = query.AsEnumerable();
+        if (result.Any())
+            return _mapper.Map<List<AccountDto>>(result);
+        return null;
     }
     public async Task<AccountDto> Get(string email)
     {
