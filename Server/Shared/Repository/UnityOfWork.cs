@@ -13,6 +13,14 @@ public class UnitOfWork<T> : IRepository<T> where T : class
         this.Query = context.Set<T>();
     }
     
+    public async Task<IEnumerable<T>?> GetAll()
+    {
+        return await this.Query.ToListAsync();
+    }
+    public async Task<T?> GetById(object id)
+    {
+        return await this.Query.FindAsync(id);
+    }
     public async Task Create(T entity)
     {
         await this.Query.AddAsync(entity);
@@ -27,17 +35,8 @@ public class UnitOfWork<T> : IRepository<T> where T : class
     {
         this.Query.Remove(entity);
         await this.Context.SaveChangesAsync();
-
     }
-    public async Task<T> Get(object id)
-    {
-        return await this.Query.FindAsync(id);
-    }
-    public async Task<IEnumerable<T>> GetAll()
-    {
-        return await this.Query.ToListAsync();
-    }
-    public async Task<T> GetOneByCriteria(Expression<Func<T, bool>> expression)
+    public async Task<T?> GetOneByCriteria(Expression<Func<T, bool>> expression)
     {
         return await this.Query.Where(expression).FirstOrDefaultAsync();
     }

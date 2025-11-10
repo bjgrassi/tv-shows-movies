@@ -1,9 +1,9 @@
-DROP TABLE IF EXISTS tblPermission, tblAccount, tblAccessPermission, tblRole;
+DROP TABLE IF EXISTS tblAccessPermission, tblPermission, tblAccount, tblRole;
 
 CREATE TABLE tblRole (
 	RoleID int not null PRIMARY KEY IDENTITY(1,1),
 	TypeName varchar(50) not null,
-	Description varchar(150) not null
+	Description nvarchar(max) not null
 )
 
 INSERT INTO tblRole (TypeName, Description) VALUES 
@@ -26,16 +26,18 @@ INSERT INTO tblPermission (TypeName) VALUES
 ('Account.Write')
 
 CREATE TABLE tblAccount (
-	Email varchar(50) not null PRIMARY KEY,
+	AccountID int not null PRIMARY KEY IDENTITY(1,1),
+	Email varchar(50) not null UNIQUE,
 	FullName varchar(100) not null,
+	Password varchar(12) not null,
 	RoleID int not null FOREIGN KEY REFERENCES tblRole(RoleID)
 )
 
-INSERT INTO tblAccount (Email, FullName, RoleID) VALUES
-('adminzao@email.com', 'Admin Role', 1),
-('masterzaum@email.com', 'Master Role', 2),
-('regularzaum@email.com', 'Regular Role', 3),
-('lilyaldrin@email.com', 'Lily Aldrin', 3)
+INSERT INTO tblAccount (Email, FullName, Password, RoleID) VALUES
+('adminzao@email.com', 'Admin Role', '102938', 1),
+('masterzaum@email.com', 'Master Role', '102938', 2),
+('regularzaum@email.com', 'Regular Role', '102938', 3),
+('lilyaldrin@email.com', 'Lily Aldrin', '123456', 3)
 
 CREATE TABLE tblAccessPermission (
 	PermissionID int not null FOREIGN KEY REFERENCES tblPermission(PermissionID),

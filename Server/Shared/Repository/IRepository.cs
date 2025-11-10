@@ -4,12 +4,12 @@ namespace Shared.Repository;
 
 public interface IRepository<T>
 {
+    Task<IEnumerable<T>?> GetAll();
+    Task<T?> GetById(object id);
     Task Create(T entity);
     Task Update(T entity);
     Task Delete(T entity);
-    Task<T> Get(object id);
-    Task<IEnumerable<T>> GetAll();
-    Task<T> GetOneByCriteria(Expression<Func<T, bool>> expression);
+    Task<T?> GetOneByCriteria(Expression<Func<T, bool>> expression);
 
     IQueryable<T> GetQueryable();
 }

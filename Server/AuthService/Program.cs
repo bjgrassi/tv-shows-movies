@@ -16,7 +16,11 @@ var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 builder.Services.AddAutoMapper(assembly);
 
 // DB Config
-builder.Services.AddDbContext<AuthDbContext>(c => c.UseSqlServer(builderConfig["TvAuthDB"]));
+builder.Services.AddDbContext<AuthDbContext>(c => 
+{
+    c.UseSqlServer(builderConfig["TvAuthDB"]);
+    c.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); // updating entities. TODO: find a better way
+});
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();

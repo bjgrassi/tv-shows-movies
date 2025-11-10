@@ -21,48 +21,11 @@ public class AuthController : ControllerBase
         _roleService = roleService;
     }
 
-    [HttpPost("CreateAccount")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] AccountDto account)
-    {
-        _logger.LogInformation($"Saving new account with DTO: {account.ToString()}.");
-        await _accountService.Create(account);
-        return CreatedAtAction(nameof(GetById), new { email = account.Email }, account);
-    }
-
-    [HttpPut("UpdateAccount")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromBody] AccountDto account)
-    {
-        _logger.LogInformation($"Updating user with DTO: {account.ToString()}.");
-        if (account.Email == null)
-        {
-            return NotFound();
-        }
-
-        var accountItem = await _accountService.Get(account.Email);
-
-        if (accountItem.Email != account.Email)
-        {
-            return BadRequest();
-        }
-
-        await _accountService.Update(account);
-        return NoContent();
-    }
-
-    [HttpDelete("DeleteAccount")]
-    public async Task<IActionResult> Delete([FromBody] AccountDto user)
-    {
-        _logger.LogInformation($"Deleting user with DTO: {user.ToString()}.");
-        await _accountService.Delete(user);
-        return Ok();
-    }
-
     [HttpGet("GetAccounts")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAll()
     {
         _logger.LogInformation("Retrieving all users.");
@@ -72,14 +35,59 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("GetAccount/{email}")]
-    public async Task<IActionResult> GetById([FromQuery] string email)
+    [HttpGet("GetAccount/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById([FromQuery] int accountID)
     {
-        _logger.LogInformation($"Retrieving user with email = {email}.");
-        var result = await _accountService.Get(email);
+        _logger.LogInformation($"Retrieving account with id = {accountID}.");
+        var result = await _accountService.GetById(accountID);
         if (result == null)
             return NotFound();
         return Ok(result);
+    }
+
+    [HttpPost("CreateAccount")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create([FromBody] AccountDto account)
+    {
+        _logger.LogInformation($"Saving new account with DTO: {account.ToString()}.");
+        await _accountService.Create(account);
+        return CreatedAtAction(nameof(GetById), new { accountID = account.AccountID }, account);
+    }
+
+    [HttpPut("UpdateAccount")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update([FromBody] AccountDto account)
+    {
+        _logger.LogInformation($"Updating user with DTO: {account.ToString()}.");
+        if (account.AccountID <= 0)
+        {
+            return NotFound();
+        }
+
+        var accountItem = await _accountService.GetById(account.AccountID);
+
+        if (accountItem?.AccountID != account.AccountID)
+        {
+            return BadRequest();
+        }
+
+        await _accountService.Update(account);
+        return NoContent();
+    }
+
+    [HttpDelete("DeleteAccount")]
+    public async Task<IActionResult> Delete([FromBody] AccountDto account)
+    {
+        _logger.LogInformation($"Deleting account with DTO: {account.ToString()}.");
+        await _accountService.Delete(account);
+        return Ok();
     }
 
     [HttpGet("Login")]

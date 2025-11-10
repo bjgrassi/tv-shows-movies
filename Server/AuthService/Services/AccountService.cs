@@ -17,13 +17,29 @@ public class AccountService : IAccountService
         _accountRepository = accountRepository;
         _mapper = mapper;
     }
+    public async Task<List<AccountDto>?> GetAll()
+    {
+        var query = _accountRepository.GetQueryable();
+        query = query.Include(account => account.Role);
+        var result = await query.ToListAsync();
+        if (result.Any())
+            return _mapper.Map<List<AccountDto>>(result);
+        return null;
+    }
+    public async Task<AccountDto?> GetById(int accountID)
+    {
+        var query = _accountRepository.GetQueryable();
+        query = query.Include(account => account.Role);
+
+        var result = await query.Where(account => account.AccountID == accountID).FirstOrDefaultAsync();
+        if (result != null)
+            return _mapper.Map<AccountDto>(result);
+        return null;
+    }
     public async Task Create(AccountDto AccountDto)
     {
-        // if (AccountDto.Email != null)
-        //     throw new ArgumentException("User already has account.");
-
-        // if (AccountDto.RoleID == null)
-        //     AccountDto.RoleID = 3; // Default role is 'Regular'
+        if (AccountDto.AccountID > 0)
+            throw new ArgumentException("User already has account.");
             
         var account = _mapper.Map<Account>(AccountDto);
         await _accountRepository.Create(account);
@@ -31,31 +47,17 @@ public class AccountService : IAccountService
 
     public async Task Update(AccountDto AccountDto)
     {
-        if (AccountDto.Email == null)
+        if (AccountDto.AccountID <= 0)
             throw new ArgumentException("User is invalid.");
         var account = _mapper.Map<Account>(AccountDto);
         await _accountRepository.Update(account);
     }
     public async Task Delete(AccountDto AccountDto)
     {
-        if (AccountDto.Email == null)
+        if (AccountDto.AccountID <= 0)
             throw new ArgumentException("User is invalid.");
         var account = _mapper.Map<Account>(AccountDto);
         await _accountRepository.Delete(account);
-    }
-    public async Task<List<AccountDto>> GetAll()
-    {
-        var query = _accountRepository.GetQueryable();
-        query = query.Include(account => account.Role);
-        var result = query.AsEnumerable();
-        if (result.Any())
-            return _mapper.Map<List<AccountDto>>(result);
-        return null;
-    }
-    public async Task<AccountDto> Get(string email)
-    {
-        var result = await _accountRepository.Get(email);
-        return _mapper.Map<AccountDto>(result);
     }
 
     public async Task<AccountLoginDto> Login(string email, string password)

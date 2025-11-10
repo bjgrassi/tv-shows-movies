@@ -8,8 +8,9 @@ public class AccountMapping : IEntityTypeConfiguration<Account>
 {
     public void Configure(EntityTypeBuilder<Account> builder)
     {
-        builder.ToTable("tblAccount"); // TODO: Specify the table name
-        builder.HasKey(x => x.Email);
+        builder.ToTable("tblAccount");
+        builder.HasKey(x => x.AccountID);
+        builder.Property(x => x.AccountID).IsRequired().HasColumnName("AccountID");
         builder.Property(x => x.Email).IsRequired().HasColumnName("Email");
         builder.Property(x => x.FullName).IsRequired().HasColumnName("FullName");
         builder.Property(x => x.Password).IsRequired().HasColumnName("Password");
