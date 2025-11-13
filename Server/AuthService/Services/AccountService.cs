@@ -17,42 +17,47 @@ public class AccountService : IAccountService
         _accountRepository = accountRepository;
         _mapper = mapper;
     }
-    public async Task<List<AccountDto>?> GetAll()
+    public async Task<List<AccountDtoGetRole>?> GetAll()
     {
         var query = _accountRepository.GetQueryable();
         query = query.Include(account => account.Role);
         var result = await query.ToListAsync();
         if (result.Any())
-            return _mapper.Map<List<AccountDto>>(result);
+            return _mapper.Map<List<AccountDtoGetRole>>(result);
         return null;
     }
-    public async Task<AccountDto?> GetById(int accountID)
+    public async Task<AccountDtoGetRole?> GetById(int accountID)
     {
         var query = _accountRepository.GetQueryable();
         query = query.Include(account => account.Role);
 
         var result = await query.Where(account => account.AccountID == accountID).FirstOrDefaultAsync();
         if (result != null)
-            return _mapper.Map<AccountDto>(result);
+            return _mapper.Map<AccountDtoGetRole>(result);
         return null;
     }
-    public async Task Create(AccountDto AccountDto)
+    public async Task Create(AccountDtoCreate AccountDto)
     {
-        if (AccountDto.AccountID > 0)
+        var query = _accountRepository.GetQueryable();
+        query = query.Include(account => account.Role);
+
+        var result = await query.Where(account => account.Email == AccountDto.Email).FirstOrDefaultAsync();
+
+        if (result != null)
             throw new ArgumentException("User already has account.");
-            
+
         var account = _mapper.Map<Account>(AccountDto);
         await _accountRepository.Create(account);
     }
 
-    public async Task Update(AccountDto AccountDto)
+    public async Task Update(AccountDtoUpdate AccountDto)
     {
         if (AccountDto.AccountID <= 0)
             throw new ArgumentException("User is invalid.");
         var account = _mapper.Map<Account>(AccountDto);
         await _accountRepository.Update(account);
     }
-    public async Task Delete(AccountDto AccountDto)
+    public async Task Delete(AccountDtoUpdate AccountDto)
     {
         if (AccountDto.AccountID <= 0)
             throw new ArgumentException("User is invalid.");

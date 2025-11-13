@@ -9,9 +9,10 @@ public class AccountProfile : AutoMapper.Profile
     {
         var regularId = 3; // Default role ID for regular users
 
-        CreateMap<Account, AccountDto>();
-        CreateMap<AccountDto, Account>()
-            .ForMember(dest => dest.RoleID, opt => opt.MapFrom(src => src.RoleID != null ? src.RoleID : regularId))
-            .ForMember(dest => dest.Role, opt => opt.Ignore());
+        CreateMap<Account, AccountDtoGetRole>();
+        CreateMap<AccountDtoGetRole, Account>();
+        CreateMap<AccountDtoUpdate, Account>();
+        CreateMap<AccountDtoCreate, Account>()
+            .ForMember(dest => dest.RoleID, opt => opt.MapFrom(src => src.RoleID != null ? src.RoleID : regularId));
     }
 }

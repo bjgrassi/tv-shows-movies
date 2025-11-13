@@ -10,10 +10,10 @@ public class AccountMapping : IEntityTypeConfiguration<Account>
     {
         builder.ToTable("tblAccount");
         builder.HasKey(x => x.AccountID);
-        builder.Property(x => x.AccountID).IsRequired().HasColumnName("AccountID");
-        builder.Property(x => x.Email).IsRequired().HasColumnName("Email");
-        builder.Property(x => x.FullName).IsRequired().HasColumnName("FullName");
-        builder.Property(x => x.Password).IsRequired().HasColumnName("Password");
+        builder.Property(x => x.AccountID).IsRequired().HasMaxLength(50);
+        builder.Property(x => x.Email).IsRequired().HasMaxLength(200);
+        builder.Property(x => x.FullName).IsRequired().HasMaxLength(100);
+        builder.Property(x => x.Password).IsRequired().HasMaxLength(12);
         builder.Property(x => x.RoleID).IsRequired().HasColumnName("RoleID");
     }
 }

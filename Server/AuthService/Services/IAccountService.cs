@@ -4,10 +4,10 @@ namespace AuthService.Services;
 
 public interface IAccountService
 {
-    Task<List<AccountDto>?> GetAll();
-    Task<AccountDto?> GetById(int accountID);
-    Task Create(AccountDto account);
-    Task Update(AccountDto account);
-    Task Delete(AccountDto account);
+    Task<List<AccountDtoGetRole>?> GetAll();
+    Task<AccountDtoGetRole?> GetById(int accountID);
+    Task Create(AccountDtoCreate account);
+    Task Update(AccountDtoUpdate account);
+    Task Delete(AccountDtoUpdate account);
     Task<AccountLoginDto> Login(string email, string password);
 }

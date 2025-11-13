@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
 using AuthService.Services;
@@ -22,7 +21,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("GetAccounts")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<AccountDtoGetRole>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -36,56 +35,73 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("GetAccount/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccountDtoGetRole))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById([FromQuery] int accountID)
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        _logger.LogInformation($"Retrieving account with id = {accountID}.");
-        var result = await _accountService.GetById(accountID);
+        _logger.LogInformation($"Retrieving account with id = {id}.");
+        var result = await _accountService.GetById(id);
         if (result == null)
             return NotFound();
         return Ok(result);
     }
 
     [HttpPost("CreateAccount")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AccountDtoCreate))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] AccountDto account)
+    public async Task<IActionResult> Create([FromBody] AccountDtoCreate account)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
         _logger.LogInformation($"Saving new account with DTO: {account.ToString()}.");
         await _accountService.Create(account);
-        return CreatedAtAction(nameof(GetById), new { accountID = account.AccountID }, account);
+        return Created("", account);
     }
 
     [HttpPut("UpdateAccount")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccountDtoUpdate))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromBody] AccountDto account)
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    public async Task<IActionResult> Update([FromBody] AccountDtoUpdate account)
     {
         _logger.LogInformation($"Updating user with DTO: {account.ToString()}.");
         if (account.AccountID <= 0)
         {
-            return NotFound();
+            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, "Invalid id."));
         }
 
         var accountItem = await _accountService.GetById(account.AccountID);
 
         if (accountItem?.AccountID != account.AccountID)
         {
-            return BadRequest();
+            return NotFound();
         }
 
         await _accountService.Update(account);
-        return NoContent();
+        return Ok();
     }
 
     [HttpDelete("DeleteAccount")]
-    public async Task<IActionResult> Delete([FromBody] AccountDto account)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccountDtoUpdate))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    public async Task<IActionResult> Delete([FromBody] AccountDtoUpdate account)
     {
         _logger.LogInformation($"Deleting account with DTO: {account.ToString()}.");
+        if (account.AccountID <= 0)
+        {
+            return BadRequest();
+        }
+
+        var accountItem = await _accountService.GetById(account.AccountID);
+
+        if (accountItem?.AccountID != account.AccountID)
+        {
+            return NotFound();
+        }
+        
         await _accountService.Delete(account);
         return Ok();
     }
