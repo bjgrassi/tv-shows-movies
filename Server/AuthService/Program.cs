@@ -19,7 +19,7 @@ builder.Services.AddAutoMapper(assembly);
 builder.Services.AddDbContext<AuthDbContext>(c => 
 {
     c.UseSqlServer(builderConfig["TvAuthDB"]);
-    c.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); // updating entities. TODO: find a better way
+    c.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();

@@ -27,11 +27,17 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAll()
     {
-        _logger.LogInformation("Retrieving all users.");
-        var result = await _accountService.GetAll();
-        if (result == null || result.Count == 0)
-            return NotFound();
-        return Ok(result);
+        try
+        {
+            _logger.LogInformation("Retrieving all users.");
+            var result = await _accountService.GetAll();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving all users.");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+        }
     }
 
     [HttpGet("GetAccount/{id}")]
@@ -42,87 +48,111 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         _logger.LogInformation($"Retrieving account with id = {id}.");
-        var result = await _accountService.GetById(id);
-        if (result == null)
-            return NotFound();
-        return Ok(result);
+        try
+        {
+            var result = await _accountService.GetById(id);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving account.");
+            return NotFound(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status404NotFound, ex.Message));
+        }
     }
 
     [HttpPost("CreateAccount")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AccountDtoCreate))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> Create([FromBody] AccountDtoCreate account)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-        _logger.LogInformation($"Saving new account with DTO: {account.ToString()}.");
-        await _accountService.Create(account);
-        return Created("", account);
+        _logger.LogInformation($"Creating a new account with DTO: {account.ToString()}.");
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            await _accountService.Create(account);
+            return Created("", account);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating account.");
+            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
+        }
     }
 
     [HttpPut("UpdateAccount")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccountDtoUpdate))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> Update([FromBody] AccountDtoUpdate account)
     {
         _logger.LogInformation($"Updating user with DTO: {account.ToString()}.");
-        if (account.AccountID <= 0)
+        try 
         {
-            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, "Invalid id."));
+            await _accountService.Update(account);
+            return Ok(account);
         }
-
-        var accountItem = await _accountService.GetById(account.AccountID);
-
-        if (accountItem?.AccountID != account.AccountID)
+        catch (Exception ex)
         {
-            return NotFound();
+            _logger.LogError(ex, "Error updating account.");
+            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
         }
-
-        await _accountService.Update(account);
-        return Ok();
     }
 
     [HttpDelete("DeleteAccount")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccountDtoUpdate))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> Delete([FromBody] AccountDtoUpdate account)
     {
         _logger.LogInformation($"Deleting account with DTO: {account.ToString()}.");
-        if (account.AccountID <= 0)
+        try 
         {
-            return BadRequest();
+            await _accountService.Delete(account);
+            return Ok();
         }
-
-        var accountItem = await _accountService.GetById(account.AccountID);
-
-        if (accountItem?.AccountID != account.AccountID)
+        catch (Exception ex)
         {
-            return NotFound();
+            _logger.LogError(ex, "Error deleting account.");
+            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
         }
-        
-        await _accountService.Delete(account);
-        return Ok();
     }
 
     [HttpGet("Login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> Login(string email, string password)
     {
         _logger.LogInformation($"logging in user: login/email:{email} - password: {password}");
-        var result = await _accountService.Login(email, password);
-        if (result == null)
-            return NotFound();
-        return Ok(result);
+        try
+        {
+            var result = await _accountService.Login(email, password);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during login.");
+            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
+        }
     }
 
     [HttpGet("GetRoles")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RoleDto>))]
     public async Task<IActionResult> GetAllRoles()
     {
         _logger.LogInformation("Retrieving all roles.");
-        var result = await _roleService.GetAll();
-        if (result == null || result.Count == 0)
-            return NotFound();
-        return Ok(result);
+        try
+        {
+            var result = await _roleService.GetAll();
+            if (result == null || result.Count == 0)
+                return Ok(new List<RoleDto>()); // Return empty list
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving all roles.");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+        }
     }
 }
