@@ -53,10 +53,12 @@ public class AuthController : ControllerBase
             var result = await _accountService.GetById(id);
             return Ok(result);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             _logger.LogError(ex, "Error retrieving account.");
-            return NotFound(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status404NotFound, ex.Message));
+            if (ex.ParamName == "notfound")
+                return NotFound(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status404NotFound, ex.Message));
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }
 
@@ -73,10 +75,12 @@ public class AuthController : ControllerBase
             await _accountService.Create(account);
             return Created("", account);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             _logger.LogError(ex, "Error creating account.");
-            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
+            if(ex.ParamName == "duplicate")
+                return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }
 
@@ -91,10 +95,14 @@ public class AuthController : ControllerBase
             await _accountService.Update(account);
             return Ok(account);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             _logger.LogError(ex, "Error updating account.");
-            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
+            if (ex.ParamName == "invalid")
+                return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
+            if(ex.ParamName == "notfound")
+                return NotFound(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status404NotFound, ex.Message));
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }
 
@@ -109,7 +117,7 @@ public class AuthController : ControllerBase
             await _accountService.Delete(account);
             return Ok();
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             _logger.LogError(ex, "Error deleting account.");
             return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
@@ -130,7 +138,7 @@ public class AuthController : ControllerBase
                 return NotFound();
             return Ok(result);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             _logger.LogError(ex, "Error during login.");
             return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
@@ -149,7 +157,7 @@ public class AuthController : ControllerBase
                 return Ok(new List<RoleDto>()); // Return empty list
             return Ok(result);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             _logger.LogError(ex, "Error retrieving all roles.");
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");

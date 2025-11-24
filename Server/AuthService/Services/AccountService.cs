@@ -33,7 +33,7 @@ public class AccountService : IAccountService
 
         var result = await query.Where(account => account.AccountID == accountID).FirstOrDefaultAsync();
         if (result == null)
-            throw new ArgumentNullException("User not found.");
+            throw new ArgumentException("User not found.", "notfound");
 
         return _mapper.Map<AccountDtoGetRole>(result);
     }
@@ -45,7 +45,7 @@ public class AccountService : IAccountService
         var result = await query.Where(account => account.Email == AccountDto.Email).FirstOrDefaultAsync();
 
         if (result != null)
-            throw new Exception("User already has account.");
+            throw new ArgumentException("User already has account.", "duplicate");
 
         var account = _mapper.Map<Account>(AccountDto);
         await _accountRepository.Create(account);
@@ -54,7 +54,7 @@ public class AccountService : IAccountService
     public async Task Update(AccountDtoUpdate AccountDto)
     {
         if (AccountDto.AccountID <= 0)
-            throw new Exception("User id is invalid.");
+            throw new ArgumentException("User id is invalid.", "invalid");
         
         var accountItem = await GetById(AccountDto.AccountID);
         if (accountItem != null)
@@ -66,7 +66,7 @@ public class AccountService : IAccountService
     public async Task Delete(AccountDtoUpdate AccountDto)
     {
         if (AccountDto.AccountID <= 0)
-            throw new Exception("User is invalid.");
+            throw new ArgumentException("User is invalid.", "invalid");
 
         var accountItem = await GetById(AccountDto.AccountID);
         if (accountItem != null)
@@ -79,11 +79,12 @@ public class AccountService : IAccountService
     public async Task<AccountLoginDto> Login(string email, string password)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-            throw new Exception("Email and Password cannot be empty.");
+            throw new ArgumentException("Email and Password cannot be empty.", "empty");
 
         var account = await _accountRepository.GetOneByCriteria(a => a.Email == email && a.Password == password);
         if (account == null)
-            throw new Exception("Incorret Email or Password. Please try again...");
+            throw new ArgumentException("Incorret Email or Password. Please try again...", "incorrect");
+            
         return _mapper.Map<AccountLoginDto>(account);
     }
 }

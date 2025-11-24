@@ -1,6 +1,8 @@
 namespace AuthService.Services.Dto;
 public class AccountLoginDto
 {
-    public string? Email { get; set; }
-    public string? Password { get; set; }
+    public int AccountID { get; set; }
+    public required string Email { get; set; }
+    public required string FullName { get; set; }
+    public int? RoleID { get; set; }
 }

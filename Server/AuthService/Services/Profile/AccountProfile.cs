@@ -14,5 +14,6 @@ public class AccountProfile : AutoMapper.Profile
         CreateMap<AccountDtoUpdate, Account>();
         CreateMap<AccountDtoCreate, Account>()
             .ForMember(dest => dest.RoleID, opt => opt.MapFrom(src => src.RoleID != null ? src.RoleID : regularId));
+        CreateMap<Account, AccountLoginDto>();
     }
 }
