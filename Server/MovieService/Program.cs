@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
-using AuthService.Repositories;
-using AuthService.Services;
+using MovieService.Repositories;
+using MovieService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var builderConfig = builder.Configuration;
@@ -15,15 +15,13 @@ var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 builder.Services.AddAutoMapper(assembly);
 
 // DB Config
-builder.Services.AddDbContext<AuthDbContext>(c => 
+builder.Services.AddDbContext<MovieDbContext>(c => 
 {
-    c.UseSqlServer(builderConfig["TvAuthDB"]);
+    c.UseSqlServer(builderConfig["TvMovieSerieDB"]);
     c.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IMovieService, MovieService.Services.MovieService>();
 
 var app = builder.Build();
 
