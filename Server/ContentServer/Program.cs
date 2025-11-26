@@ -15,13 +15,15 @@ var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 builder.Services.AddAutoMapper(assembly);
 
 // DB Config
-builder.Services.AddDbContext<MovieDbContext>(c => 
+builder.Services.AddDbContext<ContentDbContext>(c => 
 {
     c.UseSqlServer(builderConfig["TvMovieSerieDB"]);
     c.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<ISerieRepository, SerieRepository>();
+builder.Services.AddScoped<ISerieService, SerieService>();
 
 var app = builder.Build();
 

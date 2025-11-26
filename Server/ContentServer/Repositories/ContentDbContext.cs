@@ -2,16 +2,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ContentController.Repositories;
 
-public class MovieDbContext : DbContext
+public class ContentDbContext : DbContext
 {
-    public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options)
+    public ContentDbContext(DbContextOptions<ContentDbContext> options) : base(options)
     {
         
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(MovieDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ContentDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

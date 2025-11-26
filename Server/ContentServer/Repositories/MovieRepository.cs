@@ -5,7 +5,7 @@ namespace ContentController.Repositories;
 
 public class MovieRepository : UnitOfWork<Movie>, IMovieRepository
 {
-    public MovieRepository(MovieDbContext context) : base(context)
+    public MovieRepository(ContentDbContext context) : base(context)
     {
         
     }
