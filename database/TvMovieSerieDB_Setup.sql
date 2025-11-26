@@ -35,7 +35,7 @@ CREATE TABLE tblMovie (
 --CREATE TRIGGER MovieUpdateAt ON tblMovie
 --AFTER UPDATE
 --AS BEGIN
---    IF NOT UPDATE(UpdatedAt) -- Evitar recursão na coluna
+--    IF NOT UPDATE(UpdatedAt) -- Evitar recursï¿½o na coluna
 --    BEGIN
 --        UPDATE t
 --            SET t.UpdatedAt = CURRENT_TIMESTAMP

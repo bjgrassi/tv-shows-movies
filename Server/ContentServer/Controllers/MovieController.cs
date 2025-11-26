@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using MovieService.Services;
-using MovieService.Services.Dto;
+using ContentService.Services;
+using ContentService.Services.Dto;
 
-namespace MovieController.Controllers;
+namespace ContentController.Controllers;
 
 [ApiController]
 [Route("[controller]")] // Movie/...

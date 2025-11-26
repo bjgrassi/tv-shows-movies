@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
-using MovieService.Repositories;
-using MovieService.Services;
+using ContentController.Repositories;
+using ContentService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var builderConfig = builder.Configuration;
@@ -21,7 +21,7 @@ builder.Services.AddDbContext<MovieDbContext>(c =>
     c.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-builder.Services.AddScoped<IMovieService, MovieService.Services.MovieService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
 
 var app = builder.Build();
 

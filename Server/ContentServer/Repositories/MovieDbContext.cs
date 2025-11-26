@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace MovieService.Repositories;
+namespace ContentController.Repositories;
 
 public class MovieDbContext : DbContext
 {

@@ -1,7 +1,7 @@
-using MovieService.Domain;
-using MovieService.Services.Dto;
+using ContentController.Domain;
+using ContentService.Services.Dto;
 
-namespace MovieService.Services.Profile;
+namespace ContentService.Services.Profile;
 
 public class MovieProfile : AutoMapper.Profile
 {

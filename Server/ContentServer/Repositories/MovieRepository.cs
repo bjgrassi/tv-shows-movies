@@ -1,7 +1,7 @@
-using MovieService.Domain;
+using ContentController.Domain;
 using Shared.Repository;
 
-namespace MovieService.Repositories;
+namespace ContentController.Repositories;
 
 public class MovieRepository : UnitOfWork<Movie>, IMovieRepository
 {

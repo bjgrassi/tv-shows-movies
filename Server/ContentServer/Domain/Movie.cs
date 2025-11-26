@@ -1,4 +1,4 @@
-namespace MovieService.Domain;
+namespace ContentController.Domain;
 
 public class Movie
 {

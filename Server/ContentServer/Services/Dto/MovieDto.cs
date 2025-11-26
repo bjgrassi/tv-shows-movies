@@ -1,4 +1,4 @@
-namespace MovieService.Services.Dto;
+namespace ContentService.Services.Dto;
 
 public class MovieDto
 {

@@ -1,9 +1,9 @@
-using MovieService.Domain;
-using MovieService.Repositories;
-using MovieService.Services.Dto;
+using ContentController.Domain;
+using ContentController.Repositories;
+using ContentService.Services.Dto;
 using AutoMapper;
 
-namespace MovieService.Services;
+namespace ContentService.Services;
 
 public class MovieService : IMovieService
 {
@@ -18,9 +18,9 @@ public class MovieService : IMovieService
     public async Task<List<MovieDto>?> GetAll()
     {
         var result = await _movieRepository.GetAll();
-        // if (result.Any())
+        if (result.Any())
             return _mapper.Map<List<MovieDto>>(result);
-        // return [];
+        return [];
     }
     public async Task<MovieDto?> GetById(int movieID)
     {
@@ -34,7 +34,7 @@ public class MovieService : IMovieService
     public async Task Create(MovieDto movieDto)
     {
         if (movieDto.MovieID > 0)
-            throw new ArgumentException("Movie already has id.");
+            throw new ArgumentException("Movie already has id.", "duplicate");
         var movieEntity = _mapper.Map<Movie>(movieDto);
         await _movieRepository.Create(movieEntity);
     }

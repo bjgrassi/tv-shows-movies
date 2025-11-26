@@ -1,6 +1,6 @@
-using MovieService.Services.Dto;
+using ContentService.Services.Dto;
 
-namespace MovieService.Services;
+namespace ContentService.Services;
 
 public interface IMovieService
 {

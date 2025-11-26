@@ -1,8 +1,8 @@
-using MovieService.Domain;
+using ContentController.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MovieService.Repositories.Mappings;
+namespace ContentController.Repositories.Mappings;
 public class MovieMapping : IEntityTypeConfiguration<Movie>
 {
     public void Configure(EntityTypeBuilder<Movie> builder)
