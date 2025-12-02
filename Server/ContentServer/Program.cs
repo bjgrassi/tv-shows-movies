@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-using ContentController.Repositories;
+using ContentService.Repositories;
 using ContentService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +24,8 @@ builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<ISerieRepository, SerieRepository>();
 builder.Services.AddScoped<ISerieService, SerieService>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+builder.Services.AddScoped<IGenreMovieRepository, GenreMovieRepository>();
 
 var app = builder.Build();
 

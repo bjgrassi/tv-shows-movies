@@ -1,4 +1,4 @@
-namespace ContentController.Domain;
+namespace ContentService.Domain;
 
 public class Movie
 {
@@ -11,4 +11,5 @@ public class Movie
     public int RunningTime { get; set; } // in minutes
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    public IEnumerable<Genre>? Genres { get; set; }
 }

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ContentController.Repositories;
+namespace ContentService.Repositories;
 
 public class ContentDbContext : DbContext
 {

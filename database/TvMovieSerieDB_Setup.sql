@@ -107,3 +107,14 @@ SELECT * FROM tblMovie
 SELECT * FROM tblGenreMovie
 SELECT * FROM tblSerie
 SELECT * FROM tblSeason;
+
+select tblGenreMovie.MovieID, tblGenre.GenreID, tblGenre.Name
+from tblGenreMovie
+inner join tblGenre on tblGenreMovie.GenreID = tblGenre.GenreID
+where MovieID = 1
+
+select tblMovie.*, tblGenreMovie.GenreID, tblGenre.Name
+from tblGenreMovie
+inner join tblMovie on tblMovie.MovieID = tblGenreMovie.MovieID
+inner join tblGenre on tblGenreMovie.GenreID = tblGenre.GenreID
+where tblMovie.MovieID = 1

@@ -1,4 +1,4 @@
-namespace ContentController.Domain;
+namespace ContentService.Domain;
 
 public class Serie
 {

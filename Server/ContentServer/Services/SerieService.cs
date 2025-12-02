@@ -1,5 +1,5 @@
-using ContentController.Domain;
-using ContentController.Repositories;
+using ContentService.Domain;
+using ContentService.Repositories;
 using ContentService.Services.Dto;
 using AutoMapper;
 

@@ -9,4 +9,5 @@ public class MovieDto
     public int ReleaseYear { get; set; }
     public string? TypeName { get; set; }
     public int RunningTime { get; set; } // in minutes
+    public IEnumerable<GenreDto>? Genres { get; set; }
 }

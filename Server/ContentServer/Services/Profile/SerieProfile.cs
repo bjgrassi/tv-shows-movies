@@ -1,4 +1,4 @@
-using ContentController.Domain;
+using ContentService.Domain;
 using ContentService.Services.Dto;
 
 namespace ContentService.Services.Profile;

@@ -1,7 +1,7 @@
-using ContentController.Domain;
+using ContentService.Domain;
 using Shared.Repository;
 
-namespace ContentController.Repositories;
+namespace ContentService.Repositories;
 
 public interface IMovieRepository : IRepository<Movie>
 {

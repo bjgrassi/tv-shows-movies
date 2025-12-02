@@ -1,5 +1,7 @@
-using ContentController.Domain;
-using ContentController.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+using ContentService.Domain;
+using ContentService.Repositories;
 using ContentService.Services.Dto;
 using AutoMapper;
 
@@ -8,11 +10,15 @@ namespace ContentService.Services;
 public class MovieService : IMovieService
 {
     private readonly IMovieRepository _movieRepository;
+    private readonly IGenreMovieRepository _genreMovieRepository;
+    private readonly IGenreRepository _genreRepository;
     private readonly IMapper _mapper;
 
-    public MovieService(IMovieRepository movieRepository, IMapper mapper)
+    public MovieService(IMovieRepository movieRepository, IGenreMovieRepository genreMovieRepository, IGenreRepository genreRepository, IMapper mapper)
     {
         _movieRepository = movieRepository;
+        _genreMovieRepository = genreMovieRepository;
+        _genreRepository = genreRepository;
         _mapper = mapper;
     }
     public async Task<List<MovieDto>?> GetAll()
@@ -28,6 +34,29 @@ public class MovieService : IMovieService
 
         if (result == null)
             throw new ArgumentException("Movie not found.", "notfound");
+
+        // TODO: Use framework pattern
+        var genres = await 
+            (
+                from gm in _genreMovieRepository.GetQueryable()
+                where gm.MovieID == movieID
+                join g in _genreRepository.GetQueryable()
+                    on gm.GenreID equals g.GenreID
+                select new GenreDto {
+                    GenreID = g.GenreID,
+                    Name = g.Name
+                }
+            )
+            .ToListAsync();
+        result.Genres = genres.Select(g => new Genre { GenreID = g.GenreID, Name = g.Name }).AsEnumerable();
+
+        // var query = _movieRepository.GetQueryable();
+        // query = query.Include(movie => movie.Genres);
+
+        // var result = await query.Where(movie => movie.MovieID == movieID).FirstOrDefaultAsync();
+
+        // if (result == null)
+        //     throw new ArgumentException("Movie not found.", "notfound");
 
         return _mapper.Map<MovieDto>(result);
     }
