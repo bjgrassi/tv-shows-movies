@@ -2,9 +2,9 @@ using ContentService.Domain;
 using Shared.Repository;
 
 namespace ContentService.Repositories;
-public class GenreMovieRepository : UnitOfWork<GenreMovie>, IGenreMovieRepository
+public class GenreRepository : UnitOfWork<Genre>, IGenreRepository
 {
-    public GenreMovieRepository(ContentDbContext context) : base(context)
+    public GenreRepository(ContentDbContext context) : base(context)
     {
         
     }
