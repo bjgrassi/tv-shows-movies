@@ -10,6 +10,6 @@ public class MovieProfile : AutoMapper.Profile
         CreateMap<Movie, MovieDto>()
             .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres));
         CreateMap<MovieDto, Movie>();
-        CreateMap<Genre, GenreDto>();
+        CreateMap<Genre, GenreDto>().ReverseMap();
     }
 }

@@ -19,7 +19,10 @@ public class MovieService : IMovieService
     }
     public async Task<List<MovieDto>?> GetAll()
     {
-        var result = await _movieRepository.GetAll();
+        var query = _movieRepository.GetQueryable();
+        query = query.Include(movie => movie.Genres);
+
+        var result = await query.ToListAsync();
         if (result.Any())
             return _mapper.Map<List<MovieDto>>(result);
         return [];
@@ -30,10 +33,8 @@ public class MovieService : IMovieService
         query = query.Include(movie => movie.Genres);
 
         var result = await query.Where(movie => movie.MovieID == movieID).FirstOrDefaultAsync();
-
         if (result == null)
             throw new ArgumentException("Movie not found.", "notfound");
-
         return _mapper.Map<MovieDto>(result);
     }
     public async Task Create(MovieDto movieDto)

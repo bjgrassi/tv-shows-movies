@@ -18,7 +18,7 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
         builder.Property(x => x.RunningTime);
         builder.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
         builder.Property(x => x.UpdatedAt).HasDefaultValueSql("GETDATE()");
-        builder.HasMany(x => x.Genres).WithMany(x => x.Movies)
+        builder.HasMany(x => x.Genres).WithMany()
             .UsingEntity(
                 "tblGenreMovie",
                 r => r.HasOne(typeof(Genre)).WithMany().HasForeignKey("GenreID").HasPrincipalKey(nameof(Genre.GenreID)),
