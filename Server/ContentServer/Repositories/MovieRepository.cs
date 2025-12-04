@@ -9,4 +9,12 @@ public class MovieRepository : UnitOfWork<Movie>, IMovieRepository
     {
         
     }
+
+    public async Task AttachGenres(Movie movie)
+    {
+        var genresSet = this.Context.Set<Genre>();
+        foreach (var genre in movie.Genres!) {
+            genresSet.Attach(genre);
+        }
+    }
 }

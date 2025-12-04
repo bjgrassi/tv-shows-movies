@@ -5,5 +5,5 @@ namespace ContentService.Repositories;
 
 public interface IMovieRepository : IRepository<Movie>
 {
-    
+    Task AttachGenres(Movie movie);
 }

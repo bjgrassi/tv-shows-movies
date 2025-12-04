@@ -41,7 +41,10 @@ public class MovieService : IMovieService
     {
         if (movieDto.MovieID > 0)
             throw new ArgumentException("Movie already has id.", "duplicate");
+        
         var movieEntity = _mapper.Map<Movie>(movieDto);
+        // var genresEntity = _mapper.Map<List<Genre>>(movieDto.Genres);
+        await _movieRepository.AttachGenres(movieEntity);
         await _movieRepository.Create(movieEntity);
     }
 
