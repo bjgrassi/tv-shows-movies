@@ -18,12 +18,6 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
         builder.Property(x => x.RunningTime);
         builder.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
         builder.Property(x => x.UpdatedAt).HasDefaultValueSql("GETDATE()");
-        builder.HasMany(x => x.Genres).WithMany()
-            .UsingEntity(
-                "tblGenreMovie",
-                r => r.HasOne(typeof(Genre)).WithMany().HasForeignKey("GenreID").HasPrincipalKey(nameof(Genre.GenreID)),
-                l => l.HasOne(typeof(Movie)).WithMany().HasForeignKey("MovieID").HasPrincipalKey(nameof(Movie.MovieID)),
-                j => j.HasKey("MovieID", "GenreID")
-            );
+        builder.HasMany(x => x.Genres).WithMany().UsingEntity<GenreMovie>();
     }
 }

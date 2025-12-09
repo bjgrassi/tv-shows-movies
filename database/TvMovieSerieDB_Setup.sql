@@ -52,8 +52,8 @@ INSERT INTO tblMovie (Title, Synopsis, ImageUrl, ReleaseYear, RunningTime) VALUE
     'https://en.wikipedia.org/wiki/Inside_Out_%282015_film%29#/media/File:Inside_Out_(2015_film)_poster.jpg', 2015, 95)
 
 CREATE TABLE tblGenreMovie (
-	GenreID int not null FOREIGN KEY REFERENCES tblGenre(GenreID),
-	MovieID int not null FOREIGN KEY REFERENCES tblMovie(MovieID),
+	GenreID int not null FOREIGN KEY REFERENCES tblGenre(GenreID) ON DELETE CASCADE,
+	MovieID int not null FOREIGN KEY REFERENCES tblMovie(MovieID) ON DELETE CASCADE,
 	CONSTRAINT PK_GenreID_MovieID PRIMARY KEY CLUSTERED (GenreID, MovieID)
 );
 
@@ -80,8 +80,8 @@ INSERT INTO tblSerie (Title, Synopsis, ImageUrl, NumOfSeasons, IsFinished) VALUE
     'https://en.wikipedia.org/wiki/Dark_%28TV_series%29#/media/File:DarkNetflixPosterEnglish.jpg', 3, 1)
 
 CREATE TABLE tblGenreSerie (
-	GenreID int not null FOREIGN KEY REFERENCES tblGenre(GenreID),
-	SerieID int not null FOREIGN KEY REFERENCES tblSerie(SerieID),
+	GenreID int not null FOREIGN KEY REFERENCES tblGenre(GenreID) ON DELETE CASCADE,
+	SerieID int not null FOREIGN KEY REFERENCES tblSerie(SerieID) ON DELETE CASCADE,
 	CONSTRAINT PK_GenreID_SerieID PRIMARY KEY CLUSTERED (GenreID, SerieID)
 );
 

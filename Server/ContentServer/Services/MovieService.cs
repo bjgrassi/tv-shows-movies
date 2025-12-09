@@ -43,8 +43,7 @@ public class MovieService : IMovieService
             throw new ArgumentException("Movie already has id.", "duplicate");
         
         var movieEntity = _mapper.Map<Movie>(movieDto);
-        // var genresEntity = _mapper.Map<List<Genre>>(movieDto.Genres);
-        await _movieRepository.AttachGenres(movieEntity);
+        await _movieRepository.AttachGenres(movieEntity.Genres!);
         await _movieRepository.Create(movieEntity);
     }
 
@@ -56,8 +55,10 @@ public class MovieService : IMovieService
         var movieItem = await GetById(movieDto.MovieID);
         if (movieItem != null)
         {
-            var movie = _mapper.Map<Movie>(movieDto);
-            await _movieRepository.Update(movie);
+            var movieEntity = _mapper.Map<Movie>(movieDto);
+            await _movieRepository.UpdateGenres(movieEntity);
+            movieEntity.Genres = null;
+            await _movieRepository.Update(movieEntity);
         }
     }
     public async Task Delete(MovieDto movieDto)
