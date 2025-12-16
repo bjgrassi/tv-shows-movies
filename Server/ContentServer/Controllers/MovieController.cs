@@ -62,6 +62,8 @@ public class MovieController : ControllerBase
     [HttpPost("CreateMovie")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MovieDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] MovieDto movie)
     {
         _logger.LogInformation($"Creating a new movie with DTO: {movie.ToString()}.");
@@ -84,6 +86,8 @@ public class MovieController : ControllerBase
     [HttpPut("UpdateMovie")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MovieDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Update([FromBody] MovieDto movie)
     {
         _logger.LogInformation($"Updating movie with DTO: {movie.ToString()}.");
@@ -106,6 +110,8 @@ public class MovieController : ControllerBase
     [HttpDelete("DeleteMovie")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MovieDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Delete([FromBody] MovieDto movie)
     {
         _logger.LogInformation($"Deleting movie with DTO: {movie.ToString()}.");

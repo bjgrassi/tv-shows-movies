@@ -5,20 +5,20 @@ using ContentService.Services.Dto;
 namespace ContentService.Controllers;
 
 [ApiController]
-[Route("[controller]")] // Serie/...
-public class SerieController : ControllerBase
+[Route("[controller]")] // Genre/...
+public class GenreController : ControllerBase
 {
-    private readonly ILogger<SerieController> _logger;
-    private readonly ISerieService _serieService;
+    private readonly ILogger<GenreController> _logger;
+    private readonly IGenreService _genreService;
 
-    public SerieController(ILogger<SerieController> logger, ISerieService serieService)
+    public GenreController(ILogger<GenreController> logger, IGenreService genreService)
     {
         _logger = logger;
-        _serieService = serieService;
+        _genreService = genreService;
     }
 
-    [HttpGet("GetSeries")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SerieDto>))]
+    [HttpGet("GetGenres")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GenreDto>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -26,19 +26,19 @@ public class SerieController : ControllerBase
     {
         try
         {
-            _logger.LogInformation("Retrieving all series.");
-            var result = await _serieService.GetAll();
+            _logger.LogInformation("Retrieving all genres.");
+            var result = await _genreService.GetAll();
             return Ok(result);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving all series.");
+            _logger.LogError(ex, "Error retrieving all genres.");
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }
 
-    [HttpGet("GetSerie/{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SerieDto))]
+    [HttpGet("GetGenre/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenreDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
@@ -47,58 +47,54 @@ public class SerieController : ControllerBase
         _logger.LogInformation($"Retrieving account with id = {id}.");
         try
         {
-            var result = await _serieService.GetById(id);
+            var result = await _genreService.GetById(id);
             return Ok(result);
         }
         catch (ArgumentException ex)
         {
-            _logger.LogError(ex, "Error retrieving serie.");
+            _logger.LogError(ex, "Error retrieving genre.");
             if (ex.ParamName == "notfound")
                 return NotFound(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status404NotFound, ex.Message));
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }
 
-    [HttpPost("CreateSerie")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(SerieDto))]
+    [HttpPost("CreateGenre")]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GenreDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Create([FromBody] SerieDto serie)
+    public async Task<IActionResult> Create([FromBody] GenreDto genre)
     {
-        _logger.LogInformation($"Creating a new serie with DTO: {serie.ToString()}.");
+        _logger.LogInformation($"Creating a new genre with DTO: {genre.ToString()}.");
         try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            await _serieService.Create(serie);
-            return Created("", serie);
+            await _genreService.Create(genre);
+            return Created("", genre);
         }
         catch (ArgumentException ex)
         {
-            _logger.LogError(ex, "Error creating serie.");
+            _logger.LogError(ex, "Error creating genre.");
             if(ex.ParamName == "duplicate")
                 return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }
 
-    [HttpPut("UpdateSerie")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SerieDto))]
+    [HttpPut("UpdateGenre")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenreDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Update([FromBody] SerieDto serie)
+    public async Task<IActionResult> Update([FromBody] GenreDto genre)
     {
-        _logger.LogInformation($"Updating serie with DTO: {serie.ToString()}.");
+        _logger.LogInformation($"Updating genre with DTO: {genre.ToString()}.");
         try 
         {
-            await _serieService.Update(serie);
-            return Ok(serie);
+            await _genreService.Update(genre);
+            return Ok(genre);
         }
         catch (ArgumentException ex)
         {
-            _logger.LogError(ex, "Error updating serie.");
+            _logger.LogError(ex, "Error updating genre.");
             if (ex.ParamName == "invalid")
                 return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
             if(ex.ParamName == "notfound")
@@ -107,22 +103,20 @@ public class SerieController : ControllerBase
         }
     }
 
-    [HttpDelete("DeleteSerie")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SerieDto))]
+    [HttpDelete("DeleteGenre")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GenreDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Delete([FromBody] SerieDto serie)
+    public async Task<IActionResult> Delete([FromBody] GenreDto genre)
     {
-        _logger.LogInformation($"Deleting serie with DTO: {serie.ToString()}.");
+        _logger.LogInformation($"Deleting genre with DTO: {genre.ToString()}.");
         try 
         {
-            await _serieService.Delete(serie);
+            await _genreService.Delete(genre);
             return Ok();
         }
         catch (ArgumentException ex)
         {
-            _logger.LogError(ex, "Error deleting serie.");
+            _logger.LogError(ex, "Error deleting genre.");
             return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
         }
     }
