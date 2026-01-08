@@ -12,7 +12,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     
     <ProjectReference Include="..\Shared\Shared.csproj" />
-    <ProjectReference Include="..\ContentServer\ContentServer.csproj" />
+    <ProjectReference Include="..\ContentService\ContentService.csproj" />
     <ProjectReference Include="..\AuthService\AuthService.csproj" />
   </ItemGroup>
 </Project>

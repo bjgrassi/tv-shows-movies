@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "Server\AuthS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Server\Shared\Shared.csproj", "{57C9DF67-DE72-488A-882A-1CDDEE4626DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentServer", "Server\ContentServer\ContentServer.csproj", "{0C6F472F-07D2-4B1E-A1BA-D2E8AAB7EB6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentService", "Server\ContentService\ContentService.csproj", "{0C6F472F-07D2-4B1E-A1BA-D2E8AAB7EB6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserArchiveService", "Server\UserArchiveService\UserArchiveService.csproj", "{99F16DE3-AB67-40CE-8000-80556E9DB1F1}"
 EndProject
