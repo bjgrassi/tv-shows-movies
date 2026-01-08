@@ -19,8 +19,7 @@ public class MovieService : IMovieService
     }
     public async Task<List<MovieDto>?> GetAll()
     {
-        var query = _movieRepository.GetQueryable();
-        query = query.Include(movie => movie.Genres);
+        var query = _movieRepository.GetQueryable().Include(movie => movie.Genres);
 
         var result = await query.ToListAsync();
         if (result.Any())
@@ -29,8 +28,7 @@ public class MovieService : IMovieService
     }
     public async Task<MovieDto?> GetById(int movieID)
     {
-        var query = _movieRepository.GetQueryable();
-        query = query.Include(movie => movie.Genres);
+        var query = _movieRepository.GetQueryable().Include(movie => movie.Genres);
 
         var result = await query.Where(movie => movie.MovieID == movieID).FirstOrDefaultAsync();
         if (result == null)
@@ -72,5 +70,12 @@ public class MovieService : IMovieService
             var movieEntity = _mapper.Map<Movie>(movieDto);
             await _movieRepository.Delete(movieEntity);
         }
+    }
+    public async Task<List<MovieDto>> SearchMoviesByIds(List<int> movieIds)
+    {
+        var query = _movieRepository.GetQueryable().Include(movie => movie.Genres);
+        
+        var movies = await query.Where(m => movieIds.Contains(m.MovieID)).ToListAsync();
+        return _mapper.Map<List<MovieDto>>(movies);
     }
 }

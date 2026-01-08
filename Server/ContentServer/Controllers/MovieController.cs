@@ -126,4 +126,24 @@ public class MovieController : ControllerBase
             return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
         }
     }
+
+    [HttpPost("SearchMoviesByIds")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> SearchMoviesByIds([FromBody] List<int> ids)
+    {
+        _logger.LogInformation($"Fetching user movies for IDs: {string.Join(", ", ids)}.");
+        try 
+        {
+            var movies = await _movieService.SearchMoviesByIds(ids);
+            return Ok(movies);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError(ex, "Error fetching user movies.");
+            return BadRequest(ProblemDetailsFactory.CreateProblemDetails(HttpContext, StatusCodes.Status400BadRequest, ex.Message));
+        }
+    }
 }

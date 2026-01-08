@@ -9,4 +9,5 @@ public interface IMovieService
     Task Create(MovieDto movie);
     Task Update(MovieDto movie);
     Task Delete(MovieDto movie);
+    Task<List<MovieDto>> SearchMoviesByIds(List<int> movieIds);
 }
